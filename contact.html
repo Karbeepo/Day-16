@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Contact page, text box for name, email, and message. Open's the client's email app and autofills with the entered info.-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previous Lists</title>
+    <link rel="stylesheet" href="bulma.css">
+    <!--Internal CSS Styling-->
+    <style>
+        body {
+            margin: 0;
+            /* Remove default margin */
+            font-family: 'Arial', sans-serif;
+            /* Add a default font */
+            background-color: rgb(225, 193, 149);
+        }
+
+        .list-container {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            max-width: 100%;
+            /* Adjust the width as needed */
+        }
+
+        .lists-wrapper {
+            display: flex;
+            flex-direction: row;
+            /* Set the direction to row for horizontal alignment */
+        }
+
+        /* Add styles for the list title */
+        .list-container h3 {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Add styles for the navbar */
+        nav.navbar {
+            background-color: rgb(79, 47, 2);
+        }
+
+        /* Common styles for both desktop and mobile */
+        .list-container {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            max-width: 100%;
+            /* Adjust the width as needed */
+            width: 100%;
+            /* Full width on mobile */
+            margin-right: 0;
+            /* No margin on mobile */
+        }
+
+        .lists-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            /* Allow items to wrap to the next line */
+        }
+
+        /* Add styles for the list title */
+        .list-container h3 {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Add styles for the navbar */
+        nav.navbar {
+            background-color: rgb(79, 47, 2);
+        }
+
+        /* Styles for desktop - lists displayed horizontally */
+        @media only screen and (min-width: 768px) {
+            .lists-wrapper {
+                flex-direction: row;
+            }
+
+            .list-container {
+                width: 48%;
+                /* Adjust the width of each list container */
+                margin-right: 2%;
+                /* Add a small margin between list containers */
+            }
+        }
+
+        /* Styles for mobile - lists displayed vertically */
+        @media only screen and (max-width: 767px) {
+            .lists-wrapper {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<!-- The script for contact page and email-->
+<script
+    src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-1b93190375e9ccc259df3a57c1abc0e64599724ae30d7ea4c6877eb615f89387.js"></script>
+
+
+<!-- Navbar -->
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    ☰
+                </a>
+                <div class="navbar-dropdown">
+                    <a class="navbar-item" href="home.html">
+                        Home
+                    </a>
+                    <a class="navbar-item" href="lists.html">
+                        Lists
+                    </a>
+                    <a class="navbar-item" href="contact.html">
+                        Contact
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Include Bulma JavaScript for navbar toggling -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+        if ($navbarBurgers.length > 0) {
+            $navbarBurgers.forEach(el => {
+                el.addEventListener('click', () => {
+                    const target = el.dataset.target;
+                    const $target = document.getElementById(target);
+                    el.classList.toggle('is-active');
+                    $target.classList.toggle('is-active');
+                });
+            });
+        }
+    });
+</script>
+
+
+<h3>Contact Form</h3>
+<!-- Contact Form -->
+<div class="container">
+    <form class="box" action="mailto:kevin.huynh45@du.edu" method="post" enctype="text/plain">
+        Name: <input class="level-item has-text-centered" type="text" name="name"><br>
+        Email: <input class="level-item has-text-centered" type="text" name="email"><br>
+        Text: <input class="level-item has-text-centered" type="text" name="Text"><br>
+        <input type="submit" value="Send">
+    </form>
+    </head>
+
+</html>

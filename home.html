@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shoppin Listo</title>
+  <!-- Implementation of Bulma Framework-->
+  <!-- External Stylesheets -->
+  <link rel="stylesheet" href="bulma.css"> <!--Link to your Bulma stylesheet -->
+  <!-- Required Internal Style to @Override Bulma CSS (Mostly for horizontal row creation)-->
+  <!-- Internal Styles -->
+  <style>
+    body {
+      margin: 0;
+      /* Remove default margin */
+      font-family: 'Arial', sans-serif;
+      /* Add a default font */
+      background-color: rgb(225, 193, 149);
+    }
+
+    .list-container {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin: 10px 0;
+      max-width: 100%;
+      /* Adjust the width as needed */
+    }
+
+    h1 {
+      font-size: 2em;
+      /* Adjust the size as needed */
+    }
+
+    .lists-wrapper {
+      display: flex;
+      flex-direction: row;
+      /* Set the direction to row for horizontal alignment */
+    }
+
+    /* Add styles for the list title */
+    .list-container h3 {
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* Add styles for the navbar */
+    nav.navbar {
+      background-color: rgb(79, 47, 2);
+    }
+
+    /* Common styles for both desktop and mobile */
+    .list-container {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin: 10px 0;
+      max-width: 100%;
+      /* Adjust the width as needed */
+      width: 100%;
+      /* Full width on mobile */
+      margin-right: 0;
+      /* No margin on mobile */
+    }
+
+    .lists-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      /* Allow items to wrap to the next line */
+    }
+
+    /* Add styles for the list title */
+    .list-container h3 {
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* Add styles for the navbar */
+    nav.navbar {
+      background-color: rgb(79, 47, 2);
+    }
+
+    /* Styles for desktop - lists displayed horizontally */
+    @media only screen and (min-width: 768px) {
+      .lists-wrapper {
+        flex-direction: row;
+      }
+
+      .list-container {
+        width: 48%;
+        /* Adjust the width of each list container */
+        margin-right: 2%;
+        /* Add a small margin between list containers */
+      }
+    }
+
+    /* Styles for mobile - lists displayed vertically */
+    @media only screen and (max-width: 767px) {
+      .lists-wrapper {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            ☰
+          </a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="home.html">
+              Home
+            </a>
+            <a class="navbar-item" href="lists.html">
+              Lists
+            </a>
+            <a class="navbar-item" href="contact.html">
+              Contact
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <div class="container">
+    <header>
+      <style>
+        h1 {
+          text-align: center;
+        }
+      </style>
+      <h1>Welcome to Shoppin Listo!</h1>
+    </header>
+
+    <main>
+      <section>
+        <style>
+          h2 {
+            text-align: center;
+          }
+        </style>
+        <h2>Click on the "+" to get started <h2>
+      </section>
+      <section>
+        <style>
+          h2 {
+            text-align: center;
+          }
+        </style>
+        <h2>Use the drop down menu to view all the lists you created! <h2>
+      </section>
+
+      <!-- Button to add a new list -->
+      <button id="addListButton">+</button>
+
+      <!-- Container to hold dynamically created lists -->
+      <div id="listsContainer" class="lists-wrapper"></div>
+    </main>
+  </div>
+
+  <!-- ALL SCRIPTS-->
+  <!-- Script tag to include Socket.IO -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+  <!-- Include Bulma JavaScript for navbar toggling -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+      if ($navbarBurgers.length > 0) {
+        $navbarBurgers.forEach(el => {
+          el.addEventListener('click', () => {
+            const target = el.dataset.target;
+            const $target = document.getElementById(target);
+            el.classList.toggle('is-active');
+            $target.classList.toggle('is-active');
+          });
+        });
+      }
+    });
+  </script>
+
+  <!-- Script for making a new list -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const socket = io();
+
+    const addListButton = document.getElementById('addListButton');
+    const listsContainer = document.getElementById('listsContainer');
+
+    addListButton.addEventListener('click', () => {
+      // Generate a unique list code
+      const listCode = generateUniqueListCode();
+
+      const newList = document.createElement('div');
+      newList.className = 'list-container';
+
+      const thumbtackContainer = document.createElement('div');
+      thumbtackContainer.className = 'thumbtack-container';
+      newList.appendChild(thumbtackContainer);
+
+      newList.innerHTML = `
+        <h3 class="editable" contenteditable="true">New List</h3>
+        <ul>
+          <li class="editable" contenteditable="true">Item 1</li>
+          <li class="editable" contenteditable="true">Item 2</li>
+        </ul>
+        <div class="add-item-container">
+          <input type="text" class="newItemInput" placeholder="Add a new item">
+          <button class="addItemButton">Add Item</button>
+        </div>
+      `;
+
+      listsContainer.appendChild(newList);
+
+      const listItems = newList.querySelectorAll('.editable');
+      listItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          item.contentEditable = true;
+          item.focus();
+        });
+
+        item.addEventListener('blur', () => {
+          item.contentEditable = false;
+          saveLists();
+        });
+      });
+
+      const addItemButton = newList.querySelector('.addItemButton');
+      addItemButton.addEventListener('click', () => {
+        const newItemInput = newList.querySelector('.newItemInput');
+        const newItemText = newItemInput.value.trim();
+
+        if (newItemText) {
+          const newItem = document.createElement('li');
+          newItem.className = 'editable';
+          newItem.contentEditable = true;
+          newItem.textContent = newItemText;
+
+          newList.querySelector('ul').appendChild(newItem);
+
+          newItemInput.value = '';
+          saveLists();
+        }
+      });
+
+      // Emit 'createList' event with the generated list code
+      socket.emit('createList', listCode);
+    });
+
+    socket.on('joinList', (listCode) => {
+      console.log(`Joined list with code: ${listCode}`);
+      // Update your UI or take any other action based on the joined list code
+    });
+
+    function saveLists() {
+      const lists = [];
+      const listContainers = document.querySelectorAll('.list-container');
+      listContainers.forEach((listContainer) => {
+        const list = {
+          title: listContainer.querySelector('h3').textContent,
+          items: Array.from(listContainer.querySelectorAll('li.editable')).map(item => item.textContent),
+        };
+        lists.push(list);
+      });
+
+      // Send lists to the server to save in MongoDB
+      socket.emit('saveLists', lists);
+    }
+
+    function generateUniqueListCode() {
+      return Math.random().toString(36).substr(2, 10); // Use a longer string for increased uniqueness
+    }
+  });
+</script>
+
